@@ -1,0 +1,6 @@
+latex "%~n1.tex"
+makeindex "%~n1.idx"
+texindy -L russian -C cp1251 "%~n1.idx"
+latex "%~n1.tex"
+dvips "%~n1.dvi"
+ps2pdf "%~n1.ps"
