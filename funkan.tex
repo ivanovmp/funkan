@@ -1,0 +1,263 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt, twoside]{book}
+
+%%% 1. Encoding                                                    %%%
+\usepackage[cp1251]{inputenc}
+
+%%% 2. Language                                                    %%%
+\usepackage[russian]{babel}
+
+%%% 3. Basic packages                                              %%%
+\usepackage{amsmath, amssymb, geometry, fancyhdr, amsthm,
+	lastpage, titlesec, enumitem, stackengine}
+
+%%% 4. Setting up geometry                                         %%%
+\geometry{margin = 1in, a4paper}
+
+%%% 5. Setting up graphicx
+\usepackage[dvips]{graphicx}
+
+%%% 6. Setting up titles                                           %%%
+\def\pulptitle{Конспект курса Р. В. Бессонова
+	по функциональному анализу}
+\fancypagestyle{elderly}
+{
+	\fancyhf[cef,cof]{}
+	\fancyhf[leh,roh]{\thepage}
+	\fancyhf[reh]{\textsl{\leftmark}}
+	\fancyhf[loh]{\textsl{\rightmark}}
+}
+\pagestyle{elderly}
+\title\pulptitle
+\author{Михаил Иванов}
+\titlelabel{\thetitle.\quad}
+\renewcommand\sectionmark[1]{\markright{\S\thesection. #1}}
+
+%%% 7. Fixing chapters' behaviour                                  %%%
+\makeatletter
+\renewcommand\chapter{\if@openright\cleardoublepage\else\clearpage\fi
+                    \thispagestyle{empty}
+                    \global\@topnum\z@
+                    \@afterindentfalse
+                    \secdef\@chapter\@schapter}
+\makeatother
+
+%%% 8. Setting up theorem                                          %%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Теорема}[section]
+\newtheorem{lemma}{Лемма}[section]
+\newtheorem{sentence}{Предложение}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Определение}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Замечание}
+
+%%% 9. Setting up subject index                                   %%%
+\usepackage[xindy]{imakeidx}
+\indexsetup{
+  othercode={
+    \thispagestyle{indextitle}
+    \setlength{\columnseprule}{0.6pt}
+    \small\raggedright
+  }
+}
+\fancypagestyle{indextitle}{
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}
+	\fancyhf{}
+}
+\fancypagestyle{index}{
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}
+	\fancyhf{}
+	\fancyhead[C]{\textit{Index}}
+	\fancyfoot[C]{\thepage}
+}
+\makeindex
+
+\makeatletter
+\newcommand{\rindex}[2][\imki@jobname]{%
+  \index[#1]{\detokenize{#2}}%
+}
+\makeatother
+
+
+%%% 10. Setting up hyperref                                        %%%
+\usepackage[colorlinks,linkcolor=blue,dvips]{hyperref}
+
+%%% 11. Setting up math shortcuts                                  %%%
+	%% 11.1. Symbols
+		% 11.1.1. Special sets and structures
+		\def\C{\mathbb C}
+		\def\M{\mathfrak M}
+		\def\m{\mathfrak m}
+		\def\R{\mathbb R}
+		\def\LP{\textbf{ЛП}}
+		\def\POS{\textbf{ЧУМ}}
+		\def\TOS{\textbf{ЛУМ}}
+		\def\LF{\textbf{ЛФ}}
+		
+		% 11.1.2. Binary operators and relations
+		\def\ge{\geqslant}
+		\def\le{\leqslant}
+		\def\To{\Rightarrow}
+		
+		% 11.1.3. Other symbols
+		\def\eps{\varepsilon}
+		\makeatletter
+		\newcommand{\oast}{\mathbin{\mathpalette\make@circled*}}
+		\newcommand{\make@circled}[2]{%
+			\ooalign{$\m@th#1\smallbigcirc{#1}$\cr\hidewidth$\m@th#1#2$\hidewidth\cr}%
+		}
+		\newcommand{\smallbigcirc}[1]{%
+			\vcenter{\hbox{\scalebox{0.77778}{$\m@th#1\bigcirc$}}}%
+		}
+		\makeatother
+
+		% 11.1.4. Carryovers
+		\newcommand*{\hm}[1]{#1\nobreak\discretionary{}%
+		{\hbox{$\mathsurround=0pt #1$}}{}} % Переносы
+		
+		% 11.1.5. Two-variant column
+		\def\column#1#2{\begin{smallmatrix}#1\\#2\end{smallmatrix}}
+	
+	%% 11.2. Parentheses, brackets, braces
+	\def\phs#1{\left(#1\right)}
+	\def\brc#1{\left[#1\right]}
+	\def\fig#1{\left\{#1\right\}}
+	\def\prv#1{\left\langle#1\right\rangle}
+	
+	%% 11.3. Stylized sites
+	\def\ol{\overline}
+	\def\ul{\underline}
+
+	%% 11.4. Math operators
+	\DeclareMathOperator\dom{dom}
+	\DeclareMathOperator\sgn{sgn}
+	\DeclareMathOperator\Im{Im}
+	\DeclareMathOperator\Re{Re}
+
+%%% Everything is ready...                                         %%%
+\begin{document}
+\maketitle\pagestyle{empty}
+\tableofcontents
+\chapter{Базовый функциональный анализ}\pagestyle{elderly}
+\section{Теорема Хана-Банаха}
+\begin{definition}\label{linear_space_definition}\rindex{линейное пространство}\rindex{\LP}
+	$X$ называется \textit{линейным пространством}, или \textit{\LP} (над $\R$ или над $\C$), если на нём заданы бинарные операции ${+}\colon X\times X\to X$ и ${\cdot}\colon\column\R\C\times X\to X$, такие что для любых $x,y,z\in X$ и $\alpha,\beta\in\column\R\C$ выполнено:
+	\begin{enumerate}[label={\arabic*)}]
+		\item $(x+y)+x=x+(y+z)$ (ассоциативность сложения в $X$);
+		\item $x+y=y+x$ (коммутативность сложения в $X$);
+		\item $\exists 0\in X:x+0=x$ (существование нейтрального элемента по сложению в $X$);
+		\item $(\alpha+\beta)x=\alpha x+\beta x$ (линейность по коэффициенту);
+		\item $\alpha(x+y)=\alpha x+\alpha y$ (линейность по вектору);
+		\item $\alpha(\beta x)=(\alpha\beta)x$ (ассоциативность умножения на коэффициент);
+		\item $1x=x$ (свойство единицы);
+		\item $0x=0$ (свойство нуля).
+	\end{enumerate}
+\end{definition}
+Временно засядем в вещественный функциональный анализ.
+\begin{definition}\label{subadditive_functional}\rindex{субаддитивный функционал}
+	$p\colon X\to\R$~--- \textit{субаддитивный} функционал, если
+	$$
+		\forall x,y\in X\quad p(x+y)\le p(x)+p(y).
+	$$
+\end{definition}
+\begin{definition}\label{positive_homogeneous_functional}\rindex{положительно однородный функционал}
+	$p\colon X\to\R$~--- \textit{положительно однородный} функционал на $X$, если
+	$$
+		\forall t\ge0\quad\forall x\in X\quad p(tx)=tp(x).
+	$$
+\end{definition}
+\begin{definition}\label{linear_functional}\rindex{линейный функционал}\rindex{\LF}
+	$\varphi\colon X\to\R$~--- \textit{линейный} функционал, или \textit{\LF}, если
+	$$
+		\forall x,t\in X\quad\forall\alpha\in\R\quad\varphi(\alpha x)=\alpha\varphi(x)\quad\text{и}\quad\varphi(x+y)=\varphi(x)+\varphi(y).
+	$$
+\end{definition}
+\begin{definition}\label{sublinear_functional}\rindex{сублинейный функционал}
+	$\varphi\colon X\to\R$~--- \textit{сублинейный} функционал, если он субаддитивный и положительно однородный.
+\end{definition}
+\begin{definition}\label{linear_subset}\rindex{линейное подмножество}
+	Для \LP\ $X$ будем называть $Y\subseteq X$ \textit{линейным подмножеством}~$X$, если $\left.+_X\right|_Y$, $\left.+_X\right|_Y$, $0_X\in Y$ задают на $Y$ структуру линейного пространства.
+\end{definition}
+\begin{theorem}[Хан, Банах, вещественная форма]\label{hahn_banach_theorem_real_version}\rindex{теорема Хана-Банаха, вещественная форма}
+	Пусть $X$~--- вещественное \LP, $L\subseteq X$~--- линейное подмножество $X$, $\varphi\colon L\to\R$~--- \LF, $p\colon X\to\R$~--- сублинейный функционал, такой что $\forall x\in L\quad\varphi(x)\le p(x)$. Тогда существует \LF\ $\Phi\colon X\to\R$, такой что $\forall x\in L\quad \Phi(x)=\phi(x)$ и $\forall x\in X\quad\Phi(x)\le p(x)$.
+\end{theorem}
+\begin{proof}
+	Если $L=X$, то, очевидно, $\Phi=\varphi$ подходит. В противном случае зафиксируем любой $x_0\in X\setminus L$ и рассмотрим в нашем $X$ линейное подмножество $L_1=\prv{x_0}+L=\fig{\alpha x_0+x\mid\alpha\in\R,x\in L}$. Зададим на нём \LF\ $\Phi_\beta\phs{\alpha x_0+x}=\alpha\beta+\varphi(x)$
+
+	Подберём такое $\beta$, чтобы \LF $\Phi_\beta$ на $L_1$, определяемый по формуле $\Phi_\beta\phs{\alpha x_0+x}=\alpha\beta+\varphi(x)$, был ограничен $p$ сверху: $\forall z\in L_1\quad\Phi_\beta(z)\stackrel{\oast}{\le}p(z)$. Нам надо, чтобы $\oast$ было выполнено для $z=\alpha x_0+x$. Другими словами, хотим, чтобы $\forall\alpha\in\R\quad\forall x\in X\quad\alpha\beta+\varphi(x)\le p\phs{\alpha x_0+x}$. Для $\alpha=0$ мы это уже знаем. В остальных случаях можно поделить неравенство на $|\alpha|$, ведь это положительное число, на него можно делить неравенства, а положительная однородность позволяет заносить деление в аргумент: $\forall\alpha\in\R\quad\forall x\in X\quad\beta\sgn\alpha+\varphi\phs{\frac x{|\alpha|}}\le p\phs{x_0\sgn\alpha+\frac x{|\alpha|}}$.
+
+	$\frac x{|\alpha|}$ может быть любым вектором $z\in L$, поэтому условие на наше $\beta$ равносильно тому, что $\forall w,z\in X\quad-p\phs{-x_0-w}-\varphi(w)\le\beta\le p\phs{x_0+z}-\varphi(z)$. Чтобы оно вообще нашлось, необходимо и достаточно, чтобы левая часть была всегда не больше правой: $\forall w,z\in X\quad-p\phs{-x_0-w}-\varphi(w)\le p\phs{x_0+z}-\varphi(z)$. Перепишем это как $\forall w,z\in X\quad\varphi(z-w)\le p\phs{x_0+z}+p\phs{-x_0-w}$ по линейности. Это верно, так как $p\phs{x_0+z}+p\phs{-x_0-w}\ge p(z-w)$, а $p(z-w)\ge\varphi(z-w)$, так что можно взять любое $\beta\in\brc{\sup\limits_{w\in L}\fig{-p\phs{x_0-w}-\varphi(w)};\inf\limits_{z\in L}\fig{p\phs{x_0+z}-\varphi(z)}}$ (этот отрезок непустой).
+
+	
+	\bigskip
+	Для дальнейшего нам потребуется лемма Цорна.
+	\begin{definition}
+		Для множества ${\prec}\subseteq M\times M$ и $x,y\in M$ будем писать $x\prec y$ и $y\succ x$, если $(x,y)\in{\prec}$, и $x\nprec y$ и $y\nsucc x$, если $(x,y)\notin{\prec}$.
+		
+		\label{partial_order}\rindex{частичный порядок}
+		Множество ${\prec}\subseteq M\times M$ называется \textit{частичным порядком}, если для любых $x,y,z\in M$ выполнены его свойства:
+		\begin{enumerate}[label={\arabic*)}]
+			\item $x\nprec x$ (антирефлексивность);
+			\item $x\prec y\quad\To\quad y\nprec x$ (антисимметричность);
+			\item $(x\prec y)\wedge(y\prec z)\quad\To\quad x\prec z$ (транзитивность).
+		\end{enumerate}
+		
+		\label{partially_ordered_set}\rindex{частично упорядоченное множество}\rindex{\POS}
+		В таком случае пара $\M=\prv{M,{\prec}}$ называется \textit{частично упорядоченным множеством}, или \textit{\POS}.
+		
+		\label{total_order}\rindex{линейный порядок}
+		Частичный порядок ${\prec}\subseteq M\times M$ называется \textit{линейным порядком} на $M$, если для любых двух элементов $x,y\in M$ выполнена ровно одна из трёх возможностей: $x\prec y$, $x=y$, $x\succ y$.
+		
+		\label{totally_ordered_set}\rindex{линейно упорядоченное множество}\rindex{цепь}\rindex{\TOS}
+		\POS\ называется \textit{линейно упорядоченным множеством}, или \textit{\TOS}, или \textit{цепью}, если порядок на нём линейный.
+		
+		Для любого \POS\ $\M=\prv{M,\prec}$ любое $m\subseteq M$ индуцирует некоторый \POS\ $\m=\prv{m,{\prec}|_{m}}=\prv{m,{\prec}\cap m\times m}$, поэтому можно говорить о частично упорядоченных подмножествах данного \POS.
+		
+		\label{maximal_element_of_POS}\rindex{максимальный элемент в \POS}
+		Элемент $x\in M$ называется \textit{максимальным} в \POS\ $\M=\prv{M,{\prec}}$, если нет такого $y\in M$, что $x\prec y$.%
+		\label{maximum_element_of_POS}\rindex{наибольший элемент в \POS}
+		Это не то же самое, что \textit{наибольший элемент}~--- такой $x\in M$, что $\forall y\in M\quad (x\succ y)\vee(x=y)$. Если в \POS\ есть наибольший элемент, то он же является единственным максимальным элементом в нём, однако максимальный элемент необязательно наибольший.
+		
+		\label{upper_bound}\rindex{верхняя грань подмножества \POS}
+		Элемент $x\in M$ называется \textit{верхней гранью} для $m\subseteq M$ в \POS\ $\M=\prv{M,{\prec}}$, если в $m\cup\{x\}$ элемент $x$ наибольший.
+	\end{definition}
+	\begin{lemma}[Цорн]\label{Zorn_lemma}\rindex{лемма Цорна}
+		Если в \POS\ $\M$ у любой подцепи есть верхняя грань, то в $\M$ есть максимальный элемент.
+	\end{lemma}
+	Доказательство леммы Цорна приводить не будем, зато будем ею пользоваться.
+	\bigskip
+	
+	Рассмотрим $M$~--- множество всех \LF\ $\psi$, заданных на линейном подмножестве $X$, содержащих $L$, таких что $\forall x\in\dom\psi\quad\psi(x)\le p(x)$ и $\forall x\in L\quad\psi(x)=\varphi(x)$. Зададим порядок $\prec$ на этих \LF: $\psi_1\prec\psi_2$, если $\psi_2$ является доопределением $\psi_1$: $\dom\psi_1\subsetneq\dom\psi_2$ и $\forall x\in\dom\psi_1\quad\psi_1(x)=\psi_2(x)$. Это частичный порядок. Проверим условие леммы Цорна в $\M=\prv{M,{\prec}}$: любая цепь~--- это набор \LF, которые попарно друг друга доопределяют. Объединим их, понятно, что вновь получился \LF\ из $M$, и он больше либо равен любого \LF из цепи. Значит, применима лемма Цорна, и в $\M$ есть максимальный \LF\ $\Phi$. Он удовлетворяет всем требованиям теоремы Хана-Банаха, кроме $\dom\Phi=X$. Но и ему он тоже удовлетворяет, так как иначе (согласно первой половине рассуждения) в $\M$ есть $\Phi_\beta\succ\Phi$, что невозможно по максимальности.
+\end{proof}
+\begin{definition}\label{seminorm}\rindex{полунорма}
+	Для \LP\ $X$ над $\column\R\C$ будем называть $p\colon X\to\R$ \textit{полунормой}, если $\forall x,y\in X$ и $\alpha\in\column\R\C$ выполнены условия:
+	\begin{enumerate}[label={\arabic*)}]
+		\item $p(\alpha x)=|\alpha|p(x)$ (однородность);
+		\item $p(x+y)\le p(x)+p(y)$ (неравенство треугольника).
+	\end{enumerate}
+\end{definition}
+\begin{sentence}\label{seminorm_zero_preserving}\label{seminorm_evenness}\label{seminorm_nonnegativity}
+	Любая полунорма $p\colon X\to\R$ сохраняет ноль, чётна и неотрицательна: для любого $x\in X$ выполнено $p(0)=0$, $p(x)=p(-x)$, $p(x)\ge0$.
+\end{sentence}
+\begin{proof}
+	$p\phs{\vec 0}=p\phs{0\cdot\vec 0}=|0|\phs{\vec 0}=0$; $p(-x)=p(-1\cdot x)=|-1|p(x)=p(x)$; $p(x)=\frac{p(x)+p(-x)}2\ge\frac{p(x-x)}2=0$.
+\end{proof}
+\begin{definition}\label{real_linear_functional}\rindex{вещественно линейный функционал}
+	В комплексном \LP\ $X$ функционал $u\colon X\to\R$ называется \textit{вещественно линейным}, если он является вещественным \LF на $X$ как на вещественном \LP.
+\end{definition}
+\begin{lemma}
+	В комплексном \LP\ для любого \LF\ $\psi\colon X\to\C$ существует вещественно линейный функционал $u\colon X\to\R$, такой что $\forall x\in X\quad\psi(x)\stackrel{\oast}{=}u(x)-iu(ix)$. Обратно, по формуле $\oast$ любой вещественно линейный функционал $u$ задаёт \LF~$\psi$.
+\end{lemma}
+\begin{proof}
+	Нетрудно понять, что $u(x)=\Re\psi(x)$ будет вещественно линейным функционалом. Покажем, что $u$ удовлетворяет $\oast$: $u(x)-iu(ix)=\Re\psi(x)-i\Re\psi(ix)=\Re\psi(x)-i\Re i\psi(x)=\Re\psi(x)+i\Im\psi(x)=\psi(x)$. Обратно, чтобы убедиться, что для вещественно линейного функционала $u$ функционал $\psi\colon x\mapsto u(x)-iu(ix)$~--- \LF, надо проверить однородность и аддитивность. Аддитивность прекрасно индуцируется с вещественной линейности. Проверим однородность по $i$: $\psi(ix)=u(ix)-iu(-x)=u(ix)+iu(x)=i(u(x)-iu(ix))$. Теперь проверим по любому комплексному $\gamma=\alpha+i\beta$, $\alpha,\beta\in\R$: $\psi(\gamma x)$.
+\end{proof}
+\begin{theorem}[Хан, Банах, комплексная форма]\label{hahn_banach_theorem_complex_version}\rindex{теорема Хана-Банаха, комплексная форма}
+	Пусть $X$~--- комплексное \LP, $L\subseteq X$~--- линейное подмножество $X$, $\varphi\colon L\to\C$~--- \LF, $p\colon X\to\R$~--- полунорма, такая что $\forall x\in L\quad|\varphi(x)|\le p(x)$. Тогда существует \LF\ $\Phi\colon X\to\C$, такой что $\forall x\in L\quad \Phi(x)=\phi(x)$ и $\forall x\in X\quad\Phi(x)\le p(x)$.
+\end{theorem}
+\printindex
+\end{document}
